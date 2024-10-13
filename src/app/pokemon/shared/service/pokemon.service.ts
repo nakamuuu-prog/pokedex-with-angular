@@ -11,9 +11,12 @@ const pokeApi: PokeAPI = new PokeAPI();
   providedIn: 'root',
 })
 export class PokemonService {
-  async getPokemonsList(): Promise<NamedAPIResource[]> {
+  async getPokemonsList(
+    limit: number = 20,
+    offset: number = 0
+  ): Promise<NamedAPIResource[]> {
     return await pokeApi
-      .getPokemonsList()
+      .getPokemonsList({ limit: limit, offset: offset })
       .then((response) => response.results)
       .catch((error) => {
         throw Error('Error fetching Pokémon list:', error);

@@ -16,19 +16,30 @@ import {
 export class PokemonListComponent implements OnInit {
   pokemonsList: PokemonData[] = [];
   isLoading: boolean = this.pokemonsList === null;
-  private total: number = 1025;
+
+  private total: number = 1025; // ポケモンの総数(2024/10/13時点)
+
   private noImage: string = '/assets/image/20200501_noimage.png';
   private noData: string = '？？？';
+
+  pageSizeOptions: number[] = [20, 50, 100];
+  pageSize: number = 20;
+  currentPage: number = 1;
+  totalPages: number = Math.ceil(this.total / this.pageSize);
 
   constructor(private pokemonService: PokemonService) {}
 
   async ngOnInit() {
-    const pokemonsList = await this.pokemonService.getPokemonsList();
-    await this.setPokemonsList(pokemonsList);
+    const resourceList = await this.pokemonService.getPokemonsList();
+    await this.setPokemonsList(resourceList);
   }
 
-  private async setPokemonsList(list: NamedAPIResource[]): Promise<void> {
-    for (const resource of list) {
+  private async setPokemonsList(
+    resourceList: NamedAPIResource[]
+  ): Promise<void> {
+    const list: PokemonData[] = [];
+
+    for (const resource of resourceList) {
       const pokemon = await this.pokemonService.getPokemonByName(resource.name);
 
       if (pokemon.id > this.total) break;
@@ -41,13 +52,15 @@ export class PokemonListComponent implements OnInit {
       const image = this.getPokemonImage(pokemon.sprites);
       const types = await Promise.all(await this.getPokemonTypes(pokemon));
 
-      this.pokemonsList.push({
+      list.push({
         id: pokemon.id,
         name: name,
         image: image,
         types: types,
       });
     }
+
+    this.pokemonsList = list;
   }
 
   private getPokemonName(names: PokemonSpeciesName[]): string {
@@ -64,5 +77,26 @@ export class PokemonListComponent implements OnInit {
     return pokemon.types.map(async (typeInfo) => {
       return typeInfo.type.name;
     });
+  }
+
+  async updatePageSize(event: any): Promise<void> {
+    this.pageSize = Number(event.target.value);
+    this.totalPages = Math.ceil(this.total / this.pageSize);
+    this.currentPage = 1;
+    await this.updatePokemonsList();
+  }
+
+  async navigateToPage(page: number): Promise<void> {
+    this.currentPage = page;
+    await this.updatePokemonsList();
+  }
+
+  private async updatePokemonsList(): Promise<void> {
+    const offset = this.pageSize * (this.currentPage - 1);
+    const resourceList = await this.pokemonService.getPokemonsList(
+      this.pageSize,
+      offset
+    );
+    await this.setPokemonsList(resourceList);
   }
 }

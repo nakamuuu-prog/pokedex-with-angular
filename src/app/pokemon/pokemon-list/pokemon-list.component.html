@@ -1,10 +1,44 @@
-<h1 class="mb-4 text-danger">ポケモン一覧</h1>
+<div class="container">
+  <h1 class="mb-4 text-danger">ポケモン一覧</h1>
 
-<div *ngIf="!isLoading">
-  <div class="container">
+  <div class="d-flex justify-content-end align-items-center">
+    <label for="pageSize" class="me-2">表示件数:</label>
+    <select (change)="updatePageSize($event)" class="form-select w-auto">
+      <option *ngFor="let size of pageSizeOptions" [value]="size">
+        {{ size }}件
+      </option>
+    </select>
+  </div>
+
+  <div class="page-navi">
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="navigateToPage(1)">最初</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="navigateToPage(currentPage - 1)">
+            前へ
+          </button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="navigateToPage(currentPage + 1)">
+            次へ
+          </button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="navigateToPage(totalPages)">
+            最後
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div *ngIf="!isLoading">
     <div class="row">
       <div
-        class="item col-6 col-md-4 col-lg-2"
+        class="item col-6 col-md-3 col-lg-2"
         *ngFor="let pokemon of pokemonsList"
       >
         <app-pokemon-item [pokemonDetails]="pokemon" />
