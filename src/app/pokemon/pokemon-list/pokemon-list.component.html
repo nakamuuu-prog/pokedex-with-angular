@@ -1,0 +1,17 @@
+<h1 class="mb-4 text-danger">ポケモン一覧</h1>
+
+<div *ngIf="!isLoading">
+  <div class="container">
+    <div class="row">
+      <div
+        class="item col-6 col-md-4 col-lg-2"
+        *ngFor="let pokemon of pokemonsList"
+      >
+        <app-pokemon-item [pokemonDetails]="pokemon" />
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isLoading">
+  <p>Loading...</p>
+</div>
