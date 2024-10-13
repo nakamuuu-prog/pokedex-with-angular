@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { PokemonService } from '../shared/service/pokemon.service';
-import { PokemonData } from '../../type';
 import {
   NamedAPIResource,
   Pokemon,
   PokemonSpeciesName,
   PokemonSprites,
 } from 'pokedex-promise-v2';
+import {
+  PokemonData,
+  getPokemonName,
+  getPokemonImage,
+  getPokemonTypes,
+} from '../shared/utils/pokemon-utils';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -18,9 +23,6 @@ export class PokemonListComponent implements OnInit {
   isLoading: boolean = this.pokemonsList === null;
 
   private total: number = 1025; // ポケモンの総数(2024/10/13時点)
-
-  private noImage: string = '/assets/image/20200501_noimage.png';
-  private noData: string = '？？？';
 
   pageSizeOptions: number[] = [20, 50, 100];
   pageSize: number = 20;
@@ -44,13 +46,13 @@ export class PokemonListComponent implements OnInit {
 
       if (pokemon.id > this.total) break;
 
-      const pokemonSpecies = await this.pokemonService.getPokemonSpeciesByName(
+      const pokemonSpecies = await this.pokemonService.getPokemonSpeciesById(
         pokemon.id
       );
 
-      const name = this.getPokemonName(pokemonSpecies.names);
-      const image = this.getPokemonImage(pokemon.sprites);
-      const types = await Promise.all(await this.getPokemonTypes(pokemon));
+      const name = getPokemonName(pokemonSpecies.names);
+      const image = getPokemonImage(pokemon.sprites);
+      const types = await Promise.all(await getPokemonTypes(pokemon));
 
       list.push({
         id: pokemon.id,
@@ -61,22 +63,6 @@ export class PokemonListComponent implements OnInit {
     }
 
     this.pokemonsList = list;
-  }
-
-  private getPokemonName(names: PokemonSpeciesName[]): string {
-    const name = names.find((name) => name.language.name === 'ja')?.name;
-    return name ?? this.noData;
-  }
-
-  private getPokemonImage(sprites: PokemonSprites): string {
-    const image = sprites.other['official-artwork'].front_default;
-    return image ?? this.noImage;
-  }
-
-  private async getPokemonTypes(pokemon: Pokemon): Promise<Promise<string>[]> {
-    return pokemon.types.map(async (typeInfo) => {
-      return typeInfo.type.name;
-    });
   }
 
   async updatePageSize(event: any): Promise<void> {

@@ -1,0 +1,13 @@
+<!-- TODO: とりあえず遷移して情報を表示させるだけにして、表示項目とレイアウトは後々考える -->
+<h3>No.{{ pokemonDetails.id }}</h3>
+<img [src]="pokemonDetails.image" alt="{{ pokemonDetails.name }}" />
+<h2>{{ pokemonDetails.name }}</h2>
+<span
+  class="type-icon"
+  *ngFor="let type of pokemonDetails.types; let i = index"
+>
+  <img
+    src="/assets/image/type_icons/{{ type }}.png"
+    alt="{{ pokemonDetails.name }}"
+  />
+</span>

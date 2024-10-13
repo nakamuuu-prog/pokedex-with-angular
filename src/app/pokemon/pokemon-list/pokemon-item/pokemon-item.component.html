@@ -1,16 +1,18 @@
-<div class="pokemon-card">
-  <h6>No.{{ pokemonDetails.id }}</h6>
-  <img [src]="pokemonDetails.image" alt="{{ pokemonDetails.name }}" />
-  <h5>{{ pokemonDetails.name }}</h5>
-  <span
-    class="type-icon"
-    *ngFor="let type of pokemonDetails.types; let i = index"
-  >
-    <!-- アイコンはしゃもじさんのごはんどころさんのフリー素材より -->
-    <!-- REFE: https://booth.pm/ja/items/4324047 -->
-    <img
-      src="/assets/image/type_icons/{{ type }}.png"
-      alt="{{ pokemonDetails.name }}"
-    />
-  </span>
-</div>
+<a [routerLink]="[pokemonDetails.id]">
+  <div class="pokemon-card">
+    <h6>No.{{ pokemonDetails.id }}</h6>
+    <img [src]="pokemonDetails.image" alt="{{ pokemonDetails.name }}" />
+    <h5>{{ pokemonDetails.name }}</h5>
+    <span
+      class="type-icon"
+      *ngFor="let type of pokemonDetails.types; let i = index"
+    >
+      <!-- アイコンはしゃもじさんのごはんどころさんのフリー素材より -->
+      <!-- REFE: https://booth.pm/ja/items/4324047 -->
+      <img
+        src="/assets/image/type_icons/{{ type }}.png"
+        alt="{{ pokemonDetails.name }}"
+      />
+    </span>
+  </div>
+</a>

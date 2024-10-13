@@ -23,7 +23,7 @@ export class PokemonService {
       });
   }
 
-  async getPokemonSpeciesByName(id: number): Promise<PokemonSpecies> {
+  async getPokemonSpeciesById(id: number): Promise<PokemonSpecies> {
     return await pokeApi
       .getPokemonSpeciesByName(id)
       .then((response) => response)
@@ -35,6 +35,15 @@ export class PokemonService {
   async getPokemonByName(name: string): Promise<Pokemon> {
     return await pokeApi
       .getPokemonByName(name)
+      .then((response) => response)
+      .catch((error) => {
+        throw Error('Error fetching Pokémon detail:', error);
+      });
+  }
+
+  async getPokemonById(id: number): Promise<Pokemon> {
+    return await pokeApi
+      .getPokemonByName(id)
       .then((response) => response)
       .catch((error) => {
         throw Error('Error fetching Pokémon detail:', error);
